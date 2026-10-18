@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Stream Redirect - vivosports</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Montserrat & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Montserrat:ital,wght@0,800;0,900;1,800;1,900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Montserrat', 'sans-serif'],
+          },
+          colors: {
+            brandPurple: '#56923d',
+            brandDarkBg: '#000000',
+            cardBg: '#09090b',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom styles for strict single line scaling & custom purple theme */
+    body {
+      background-color: #000000;
+      color: #ffffff;
+    }
+
+    /* Single line title scaling logic using clamp */
+    .single-line-title {
+      font-size: clamp(1rem, 5.5vw, 2.75rem);
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    /* Styling match text & VS pill precisely from requested image typography */
+    .team-name {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      background: linear-gradient(180deg, #ffffff 0%, #d1d5db 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.8));
+    }
+
+    .vs-text {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-style: italic;
+      color: #56923d;
+      text-shadow: 0 0 15px rgba(121, 111, 199, 0.6);
+      font-size: 0.75em;
+    }
+
+    /* Button styles with #56923d purple hover & border glow */
+    .purple-btn {
+      background: #0d0d12;
+      border: 1.5px solid rgba(121, 111, 199, 0.35);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .purple-btn:hover {
+      background: rgba(121, 111, 199, 0.12);
+      border-color: #56923d;
+      box-shadow: 0 0 25px rgba(121, 111, 199, 0.35);
+      transform: translateY(-2px);
+    }
+
+    /* Watermark text with subtle purple glow */
+    .watermark-text {
+      color: #56923d;
+      opacity: 0.35;
+      text-shadow: 0 0 12px rgba(121, 111, 199, 0.2);
+      transition: opacity 0.3s ease;
+    }
+
+    .watermark-text:hover {
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body class="bg-black text-white font-sans min-h-screen flex flex-col justify-between items-center p-4 sm:p-6 overflow-x-hidden select-none">
+
+  <!-- Quick Config Modal Trigger (Admin Toggle) -->
+  <button onclick="toggleConfigModal()" class="fixed top-4 right-4 z-50 bg-zinc-900/90 hover:bg-zinc-800 text-zinc-400 hover:text-white p-3 rounded-full border border-zinc-800 transition-all shadow-lg" title="Edit Match Info">
+    <i class="fa-solid fa-gear text-lg"></i>
+  </button>
+
+  <!-- Top Header Spacer -->
+  <header class="w-full max-w-4xl pt-4 text-center z-10"></header>
+
+  <!-- Main Display Area -->
+  <main class="w-full max-w-4xl my-auto z-10 text-center flex flex-col items-center">
+    
+    <!-- =================================================== -->
+    <!-- 1. MATCH TITLE HEADER: Strict Single Line Display   -->
+    <!-- =================================================== -->
+    <div class="w-full overflow-hidden px-2 py-4 mb-6">
+      <div class="single-line-title flex items-center justify-center gap-2 sm:gap-4 whitespace-nowrap">
+        <span id="team1Name" class="team-name">REAL MADRID</span>
+        <span class="vs-text tracking-wider uppercase px-1">VS</span>
+        <span id="team2Name" class="team-name">BARCELONA</span>
+      </div>
+    </div>
+
+    <!-- =================================================== -->
+    <!-- 2. LIVE NOW BADGE: Pulsing Yellow/Purple Badge      -->
+    <!-- =================================================== -->
+    <div class="mb-10 inline-flex items-center gap-2.5 bg-yellow-500/10 border border-yellow-500/30 px-5 py-2 rounded-full shadow-lg">
+      <span class="relative flex h-3 w-3">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-3 w-3 bg-yellow-500"></span>
+      </span>
+      <span class="font-display font-black text-xs sm:text-sm tracking-widest text-yellow-400 uppercase">
+        LIVE NOW
+      </span>
+    </div>
+
+    <!-- =================================================== -->
+    <!-- 3. STREAM LINKS BUTTONS: Styled with #56923d accent -->
+    <!-- =================================================== -->
+    <div class="w-full max-w-md space-y-4 px-2">
+      <!-- Stream Link 1 -->
+      <a id="streamBtn1" href="https://thwxhx.github.io/vivohls/?x=https://live05.zhwpg.app/live/33982309_tsc.m3u8" target="_blank" rel="noopener noreferrer" 
+         class="purple-btn w-full py-4 px-6 rounded-2xl flex items-center justify-between group cursor-pointer text-left">
+        <div class="flex items-center gap-4">
+          <div class="w-11 h-11 rounded-xl bg-[#56923d]/20 border border-[#56923d]/40 flex items-center justify-center text-[#56923d] group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-play text-base"></i>
+          </div>
+          <div>
+            <div id="btn1Label" class="font-bold text-white text-base sm:text-lg group-hover:text-[#56923d] transition-colors">SERVER 1 - HD STREAM</div>
+            <div class="text-xs text-zinc-400">High speed server • Multi-audio</div>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-right text-[#56923d]/60 group-hover:text-[#56923d] group-hover:translate-x-1 transition-all"></i>
+      </a>
+
+      <!-- Stream Link 2 -->
+      <a id="streamBtn2" href="https://example.com/stream2" target="_blank" rel="noopener noreferrer" 
+         class="purple-btn w-full py-4 px-6 rounded-2xl flex items-center justify-between group cursor-pointer text-left">
+        <div class="flex items-center gap-4">
+          <div class="w-11 h-11 rounded-xl bg-[#56923d]/20 border border-[#56923d]/40 flex items-center justify-center text-[#56923d] group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-bolt text-base"></i>
+          </div>
+          <div>
+            <div id="btn2Label" class="font-bold text-white text-base sm:text-lg group-hover:text-[#56923d] transition-colors">SERVER 2 - FULL HD</div>
+            <div class="text-xs text-zinc-400">Backup stream • Mobile optimized</div>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-right text-[#56923d]/60 group-hover:text-[#56923d] group-hover:translate-x-1 transition-all"></i>
+      </a>
+    </div>
+
+  </main>
+
+  <!-- =================================================== -->
+  <!-- 4. WATERMARK: Subtle "vivosports" Branding          -->
+  <!-- =================================================== -->
+  <footer class="w-full text-center py-6 z-10">
+    <div class="watermark-text font-display font-black text-2xl tracking-widest uppercase cursor-default">
+      vivosports
+    </div>
+  </footer>
+
+  <!-- =================================================== -->
+  <!-- 5. DYNAMIC EDITING MODAL                            -->
+  <!-- =================================================== -->
+  <div id="configModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+      <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-pen-to-square text-[#56923d]"></i> Edit Live Stream Page
+      </h3>
+      
+      <div class="space-y-3 text-sm">
+        <div>
+          <label class="block text-xs font-semibold text-zinc-400 mb-1">Team 1 Name</label>
+          <input type="text" id="inputTeam1" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#56923d]">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-zinc-400 mb-1">Team 2 Name</label>
+          <input type="text" id="inputTeam2" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#56923d]">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-zinc-400 mb-1">Server 1 URL (Link 1)</label>
+          <input type="text" id="inputLink1" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#56923d]">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-zinc-400 mb-1">Server 2 URL (Link 2)</label>
+          <input type="text" id="inputLink2" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#56923d]">
+        </div>
+      </div>
+
+      <div class="mt-6 flex gap-3">
+        <button onclick="saveConfig()" class="flex-1 bg-[#56923d] hover:bg-[#685eb8] text-white font-bold py-2.5 rounded-xl transition-all">Save Changes</button>
+        <button onclick="toggleConfigModal()" class="px-4 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-semibold rounded-xl transition-all">Cancel</button>
+      </div>
+
+      <div class="mt-4 pt-4 border-t border-zinc-800 text-[11px] text-zinc-500">
+        <p>💡 <strong>Tip:</strong> Set values automatically via URL parameter string:</p>
+        <code class="text-zinc-400 block mt-1 bg-zinc-950 p-2 rounded overflow-x-auto text-[10px]">?t1=REAL+MADRID&t2=BARCELONA&l1=https://...&l2=https://...</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript for URL Parameter Parsing & Editable Modal -->
+  <script>
+
+    function loadUrlParams() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('t1')) pageConfig.team1 = urlParams.get('t1');
+      if (urlParams.has('t2')) pageConfig.team2 = urlParams.get('t2');
+      if (urlParams.has('l1')) pageConfig.link1 = urlParams.get('l1');
+      if (urlParams.has('l2')) pageConfig.link2 = urlParams.get('l2');
+    }
+
+    function renderPage() {
+      document.getElementById('team1Name').innerText = pageConfig.team1;
+      document.getElementById('team2Name').innerText = pageConfig.team2;
+      document.getElementById('streamBtn1').href = pageConfig.link1;
+      document.getElementById('streamBtn2').href = pageConfig.link2;
+
+      document.getElementById('inputTeam1').value = pageConfig.team1;
+      document.getElementById('inputTeam2').value = pageConfig.team2;
+      document.getElementById('inputLink1').value = pageConfig.link1;
+      document.getElementById('inputLink2').value = pageConfig.link2;
+    }
+
+    function toggleConfigModal() {
+      const modal = document.getElementById('configModal');
+      modal.classList.toggle('hidden');
+    }
+
+    function saveConfig() {
+      pageConfig.team1 = document.getElementById('inputTeam1').value || pageConfig.team1;
+      pageConfig.team2 = document.getElementById('inputTeam2').value || pageConfig.team2;
+      pageConfig.link1 = document.getElementById('inputLink1').value || pageConfig.link1;
+      pageConfig.link2 = document.getElementById('inputLink2').value || pageConfig.link2;
+
+      renderPage();
+      toggleConfigModal();
+    }
+
+    window.onload = function() {
+      loadUrlParams();
+      renderPage();
+    };
+  </script>
+</body>
+</html>

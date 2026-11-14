@@ -1,0 +1,59 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>VIVOSPORTS Player</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+}
+
+.player-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    background: #000;
+}
+
+.player-frame {
+    width: 111.12%;
+    height: 111.12%;
+    border: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: scale(0.90);
+    transform-origin: top left;
+}
+</style>
+</head>
+
+<body>
+
+<div class="player-container">
+    <iframe
+        class="player-frame"
+        src="https://www.zee5.com/sports/games/live-streaming/0-6-4z51083964/tmfc-vs-mfc/0-1-6z51084001"
+        allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+        allowfullscreen
+        webkitallowfullscreen
+        mozallowfullscreen>
+    </iframe>
+</div>
+
+</body>
+</html>
